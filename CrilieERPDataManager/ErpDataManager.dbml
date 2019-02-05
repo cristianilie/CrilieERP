@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="CrilieErpDatabase" Class="ErpDataManagerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\CrilieErpDatabase.mdf;Integrated Security=True" SettingsObjectName="CrilieERPDataManager.Properties.Settings" SettingsPropertyName="CrilieErpDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.BusinessPartnerType" Member="BusinessPartnerTypes">
+    <Type Name="BusinessPartnerType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TypeName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="BusinessPartnerType_BusinessPartner" Member="BusinessPartners" ThisKey="Id" OtherKey="Type" Type="BusinessPartner" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CustomPriceList" Member="CustomPriceLists">
+    <Type Name="CustomPriceList">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CustomSalesPrice" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="CustomPriceList_BusinessPartner" Member="BusinessPartners" ThisKey="Id" OtherKey="CustomPriceListId" Type="BusinessPartner" />
+      <Association Name="Product_CustomPriceList" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InvoicedProducts" Member="InvoicedProducts">
+    <Type Name="InvoicedProduct">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OrderId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoicedQuantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoicePrice" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Association Name="Order_InvoicedProduct" Member="Order" ThisKey="OrderId" OtherKey="Id" Type="Order" IsForeignKey="true" />
+      <Association Name="Product_InvoicedProduct" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BusinessPartner" Member="BusinessPartners">
+    <Type Name="BusinessPartner">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(300) NOT NULL" CanBeNull="false" />
+      <Column Name="LegalInfo" Type="System.String" DbType="VarChar(350) NOT NULL" CanBeNull="false" />
+      <Column Name="ContactInfo" Type="System.String" DbType="VarChar(450) NOT NULL" CanBeNull="false" />
+      <Column Name="DeliveryInfo" Type="System.String" DbType="VarChar(450)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentTerms" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CustomPriceListId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsMasterPartner" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="BusinessPartner_Order" Member="Orders" ThisKey="Id" OtherKey="CustomerId" Type="Order" />
+      <Association Name="BusinessPartner_Order1" Member="Orders1" ThisKey="Id" OtherKey="VendorId" Type="Order" />
+      <Association Name="CustomPriceList_BusinessPartner" Member="CustomPriceList" ThisKey="CustomPriceListId" OtherKey="Id" Type="CustomPriceList" IsForeignKey="true" />
+      <Association Name="BusinessPartnerType_BusinessPartner" Member="BusinessPartnerType" ThisKey="Type" OtherKey="Id" Type="BusinessPartnerType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[Order]" Member="Orders">
+    <Type Name="Order">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OrderInfo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="VendorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DocumentDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DeliveryDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DueDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="IsOpen" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TaxRateId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Remarks" Type="System.String" DbType="VarChar(300)" CanBeNull="true" />
+      <Association Name="Order_InvoicedProduct" Member="InvoicedProducts" ThisKey="Id" OtherKey="OrderId" Type="InvoicedProduct" />
+      <Association Name="BusinessPartner_Order" Member="BusinessPartner" ThisKey="CustomerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" />
+      <Association Name="BusinessPartner_Order1" Member="BusinessPartner1" ThisKey="VendorId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Product" Member="Products">
+    <Type Name="Product">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(150) NOT NULL" CanBeNull="false" />
+      <Association Name="Product_CustomPriceList" Member="CustomPriceLists" ThisKey="Id" OtherKey="ProductId" Type="CustomPriceList" />
+      <Association Name="Product_InvoicedProduct" Member="InvoicedProducts" ThisKey="Id" OtherKey="ProductId" Type="InvoicedProduct" />
+      <Association Name="Product_ProductStock" Member="ProductStocks" ThisKey="Id" OtherKey="ProductId" Type="ProductStock" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductStock" Member="ProductStocks">
+    <Type Name="ProductStock">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="[Committed]" Member="Committed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Available" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Cost" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="DefaultSalesPrice" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Association Name="Product_ProductStock" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
